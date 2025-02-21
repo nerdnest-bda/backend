@@ -15,6 +15,7 @@ def create_app():
     app.url_map.strict_slashes = False
 
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)  # Change according to your frontend url
+    app.config['CORS_HEADERS'] = 'Content-Type'
     print("in create app")
 
     return app
