@@ -16,6 +16,5 @@ def create_app():
 
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)  # Change according to your frontend url
     app.config['CORS_HEADERS'] = 'Content-Type'
-    print("in create app")
 
     return app
