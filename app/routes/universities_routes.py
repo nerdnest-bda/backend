@@ -13,7 +13,6 @@ universities_bp = Blueprint("universities", __name__)
 @universities_bp.route("/insert_universities", methods=["POST"])
 @cross_origin()
 def inject_universities():
-    print("working")
     try:
         body = UniversityBatchRequest(**request.json)
         data = []
