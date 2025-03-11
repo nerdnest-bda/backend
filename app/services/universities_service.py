@@ -7,7 +7,7 @@ from uuid import uuid4
 def insert_batch(data):
     try:
         db = current_app.db
-        universities_collection = db["universities"]
+        universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
         inserted_ids = []
         for university in data:
             existing_university = universities_collection.find_one({
