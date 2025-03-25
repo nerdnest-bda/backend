@@ -12,6 +12,7 @@ class UniversitySchema(BaseModel):
     address: str
     mascot_photo: str
     coordinates: Coordinates
+    quadrant: str
 
 class UniversityBatchRequest(BaseModel):
     universities: List[UniversitySchema]
