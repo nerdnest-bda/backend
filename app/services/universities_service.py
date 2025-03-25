@@ -27,3 +27,12 @@ def insert_batch(data):
 
     except Exception as e:
         return False, str(e)
+
+def get_universities(quadrant):
+    try:
+        db = current_app.db
+        universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
+        universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1}))
+        return True, universities
+    except Exception as e:
+        return False, str(e)
