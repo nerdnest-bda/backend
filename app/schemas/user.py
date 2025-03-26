@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, EmailStr, Field, constr
 from uuid import UUID
 
 
@@ -18,9 +18,10 @@ class UserBase(BaseModel):
         json_encoders = {
             UUID: str
         }
+        allow_population_by_field_name = True 
 
 class UserInResponse(UserBase):
-    _id: str
+    uid: str
 
     class Config:
         json_encoders = {

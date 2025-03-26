@@ -31,7 +31,10 @@ def get_users_by_id(user_id):
 def create_user_route():
 
     try:
+        print("Request json: ",request.json)
         user_data = UserCreate(**request.json)
+        print("user data", user_data)
+
         if create_user(user_data):
             return jsonify({"full_name": user_data.full_name}), 201
     except ValueError as e:
