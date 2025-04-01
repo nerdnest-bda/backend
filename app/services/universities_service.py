@@ -28,9 +28,23 @@ def insert_batch(data):
     except Exception as e:
         return False, str(e)
 
-def get_universities(quadrant):
+def assign_us_quadrant(lat, lon):
+    us_center_lat = 39.8
+    us_center_lon = -98.6
+    if lat > us_center_lat and lon < us_center_lon:
+        return "q1"  # Northwest (Top Left)
+    elif lat > us_center_lat and lon > us_center_lon:
+        return "q2"  # Northeast (Top Right)
+    elif lat < us_center_lat and lon < us_center_lon:
+        return "q3"  # Southwest (Bottom Left)
+    else:
+        return "q4"  # Southeast (Bottom Right)
+
+def get_universities(data):
     try:
         db = current_app.db
+        quadrant = assign_us_quadrant(data.latitude, data.longitude)
+        print(quadrant)
         universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
         universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1}))
         return True, universities
