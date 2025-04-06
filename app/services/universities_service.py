@@ -46,7 +46,7 @@ def get_universities(data):
         quadrant = assign_us_quadrant(data.latitude, data.longitude)
         print(quadrant)
         universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
-        universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1}))
+        universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1, "quadrant": 1, "address": 1, "mascot_photo": 1}))
         return True, universities
     except Exception as e:
         return False, str(e)

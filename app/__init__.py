@@ -1,11 +1,12 @@
 from flask import Flask
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from app.routes import api_bp
 from app.config import Config
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config.from_object(Config)
     client = MongoClient(app.config["MONGO_URI"])
     db_name = app.config["USER_DB"]
