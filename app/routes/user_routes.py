@@ -29,7 +29,6 @@ def get_users_by_id(user_id):
 @user_bp.route("", methods=["POST", "OPTIONS"])
 @cross_origin()
 def create_user_route():
-
     try:
         print("Request json: ",request.json)
         user_data = UserCreate(**request.json)
