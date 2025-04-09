@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 from uuid import uuid4
 
 from app.schemas.universities import UniversityBatchRequest, Coordinates
-from app.services.universities_service import insert_batch, get_universities
+from app.services.universities_service import insert_batch, get_universities, get_universities_via_id
 
 
 
@@ -37,6 +37,18 @@ def get_universities_by_coordinates():
         flag, universities = get_universities(data)
         if flag:
             return jsonify([university for university in universities]), 200
+        return jsonify({"message": "Error in fetching"}), 404
+        
+    except Exception as e:
+        return jsonify({"error": "An error occurred while fetching universities: {}".format(str(e))}), 500
+
+@universities_bp.route("/<id>", methods=["GET"])
+@cross_origin()
+def get_universities_by_id(id):
+    try:
+        flag, university = get_universities_via_id(id)
+        if flag:
+            return jsonify(university), 200
         return jsonify({"message": "Error in fetching"}), 404
         
     except Exception as e:

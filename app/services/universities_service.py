@@ -50,3 +50,13 @@ def get_universities(data):
         return True, universities
     except Exception as e:
         return False, str(e)
+
+def get_universities_via_id(id):
+    try:
+        db = current_app.db
+        universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
+        university = universities_collection.find_one({"_id": id})
+        print("MY university", university)
+        return True, university
+    except Exception as e:
+        return False, str(e)  
