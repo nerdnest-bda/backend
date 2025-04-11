@@ -10,14 +10,27 @@ def insert_batch(data):
         db = current_app.db
         universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
 
-        bulk_operations = [
-            UpdateOne(
+        bulk_operations = []
+
+        for uni in data:
+            # Calculate quadrant and set it explicitly
+            lat = uni["coordinates"]["latitude"]
+            lon = uni["coordinates"]["longitude"]
+            quadrant = assign_us_quadrant(lat, lon)
+
+            # Copy uni and remove 'quadrant' if present
+            uni_insert = uni.copy()
+
+            operation = UpdateOne(
                 {"name": uni["name"], "coordinates": uni["coordinates"]},
-                {"$setOnInsert": uni},
+                {
+                    "$setOnInsert": uni_insert,
+                    # "$set": {"quadrant": quadrant, "website": uni["website"]}
+                },
                 upsert=True
             )
-            for uni in data
-        ]
+
+            bulk_operations.append(operation)
 
         if bulk_operations:
             result = universities_collection.bulk_write(bulk_operations, ordered=False)
@@ -46,7 +59,7 @@ def get_universities(data):
         quadrant = assign_us_quadrant(data.latitude, data.longitude)
         print(quadrant)
         universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
-        universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1, "quadrant": 1, "address": 1, "mascot_photo": 1}))
+        universities = list(universities_collection.find({"quadrant": quadrant}, {"_id": 1, "name": 1, "coordinates": 1, "quadrant": 1, "address": 1, "mascot_photo": 1, "website": 1}))
         return True, universities
     except Exception as e:
         return False, str(e)
