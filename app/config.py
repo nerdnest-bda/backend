@@ -14,6 +14,7 @@ class Config:
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/flask_api")
     USER_DB = os.getenv("USER_DB", "dev-nerdnest")
     COORDINATES_COLLECTION = os.getenv("COORDINATES_COLLECTION", "college_coordinates")
+    NEWS_COLLECTION = os.getenv("NEWS_COLLECTION", "college_news")
 
     # JWT settings
     JWT_SECRET_KEY = os.getenv("JWT_SECRET", "your_default_jwt_secret")
