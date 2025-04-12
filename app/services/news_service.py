@@ -3,6 +3,8 @@ from bson import Binary, ObjectId
 from pymongo.errors import DuplicateKeyError
 from pymongo import UpdateOne
 
+
+
 def get_news(university_id):
     try:
         db = current_app.db
@@ -12,3 +14,4 @@ def get_news(university_id):
         return True, news
     except Exception as e:
         return False, str(e)  
+    

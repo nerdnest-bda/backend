@@ -3,6 +3,9 @@ from bson import Binary, ObjectId
 from pymongo.errors import DuplicateKeyError
 from pymongo import UpdateOne
 from uuid import uuid4
+import requests
+from bs4 import BeautifulSoup
+import re
 
 
 def insert_batch(data):
@@ -73,3 +76,43 @@ def get_universities_via_id(id):
         return True, university
     except Exception as e:
         return False, str(e)  
+    
+def get_about(college_name: str):
+    try:
+        url = f"https://en.wikipedia.org/w/api.php"
+        params = {
+            "action": "parse",
+            "page": college_name,
+            "format": "json",
+            "prop": "text",
+            "formatversion": 2,
+            "redirects": 1
+        }
+
+        res = requests.get(url, params=params)
+        data = res.json()
+        
+        if 'error' in data:
+            return False, None
+        
+        html_content = data['parse']['text']
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        for sup in soup.find_all("sup"):
+            sup.decompose()
+
+        
+        paragraphs = soup.find_all('p')
+        text_parts = []
+        for p in paragraphs:
+            clean_text = p.get_text(separator=" ", strip=True)
+            clean_text = re.sub(r'\s+', ' ', clean_text)
+            if clean_text:
+                text_parts.append(clean_text)
+            if len(text_parts) >= 3:
+                break
+        print("textparts:", text_parts)
+        return True, "\n\n".join(text_parts)
+    
+    except Exception as e:
+        return False, str(e)
