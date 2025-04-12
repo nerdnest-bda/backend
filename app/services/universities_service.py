@@ -111,8 +111,41 @@ def get_about(college_name: str):
                 text_parts.append(clean_text)
             if len(text_parts) >= 3:
                 break
-        print("textparts:", text_parts)
         return True, "\n\n".join(text_parts)
     
+    except Exception as e:
+        return False, str(e)
+    
+
+def get_logo(college_name: str):
+    try:
+        url = "https://en.wikipedia.org/w/api.php"
+        params = {
+            "action": "parse",
+            "page": college_name,
+            "format": "json",
+            "prop": "text",
+            "formatversion": 2,
+            "redirects": 1  # follow redirects to actual page
+        }
+
+        res = requests.get(url, params=params)
+        data = res.json()
+
+        if 'error' in data:
+            return False, "Wikipedia page not found"
+
+        html_content = data['parse']['text']
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        infobox = soup.find("table", class_="infobox")
+        img_tag = infobox.find("img") if infobox else None
+
+        if not img_tag:
+            return False, "No logo found on Wikipedia page"
+
+        logo_url = "https:" + img_tag["src"]
+        return True, logo_url
+
     except Exception as e:
         return False, str(e)
