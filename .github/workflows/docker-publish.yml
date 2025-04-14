@@ -26,5 +26,5 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build --provenance=false -t ${{vars.ECR_REGISTRY}}/${{vars.ECR_REPOSITORY}}:$IMAGE_TAG -f Dockerfile .
+          docker build --provenance=false -t ${{vars.ECR_REGISTRY}}/${{vars.ECR_REPOSITORY}}:latest -f Dockerfile .
           docker push ${{vars.ECR_REGISTRY}}/${{vars.ECR_REPOSITORY}}:latest
