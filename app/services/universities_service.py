@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, jsonify
 from bson import Binary, ObjectId
 from pymongo.errors import DuplicateKeyError
 from pymongo import UpdateOne
@@ -72,7 +72,6 @@ def get_universities_via_id(id):
         db = current_app.db
         universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
         university = universities_collection.find_one({"_id": id})
-        print("MY university", university)
         return True, university
     except Exception as e:
         return False, str(e)  
@@ -149,3 +148,48 @@ def get_logo(college_name: str):
 
     except Exception as e:
         return False, str(e)
+    
+def get_university_id_with_name(university_name: str):
+    pipeline = [
+        {
+            "$search": {
+                "index": "default",
+                "text": {
+                    "query": university_name,
+                    "path": "name",
+                    "fuzzy": {
+                        "maxEdits": 2,
+                        "prefixLength": 2
+                    }
+                }
+            }
+        },
+        {
+            "$limit": 10
+        },
+        {
+            "$project": {
+                "_id": 1,
+                "name": 1,
+                "coordinates": 1,
+                "address": 1,
+                "mascot_photo": 1,
+                "quadrant": 1,
+                "website": 1,
+                "score": { "$meta": "searchScore" }
+            }
+        }
+    ]
+    try:
+        results = list()
+        db = current_app.db
+        universities_collection = db[current_app.config["COORDINATES_COLLECTION"]]
+        results = list(universities_collection.aggregate(pipeline))
+        if results:
+            result = results[0]
+            return True, results
+        else:
+            return True, {}
+    except Exception as e:
+        return False, str(e)
+
