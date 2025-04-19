@@ -15,6 +15,7 @@ class Config:
     USER_DB = os.getenv("USER_DB", "dev-nerdnest")
     COORDINATES_COLLECTION = os.getenv("COORDINATES_COLLECTION", "college_coordinates")
     NEWS_COLLECTION = os.getenv("NEWS_COLLECTION", "college_news")
+    COLLEGE_STATS_COLLECTION = os.getenv("COLLEGE_STATS_COLLECTION", "college_stats")
 
     # JWT settings
     JWT_SECRET_KEY = os.getenv("JWT_SECRET", "your_default_jwt_secret")
